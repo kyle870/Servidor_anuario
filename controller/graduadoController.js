@@ -1,6 +1,7 @@
 const multer = require('multer');
 const subirImagen = require("../Middleware/Storage");
 const Graduado = require("../models/GraduadoEstudent");
+const path =require( 'path' );
 
 exports.agregarGraduado = async (req, res) => {
     try {
@@ -21,20 +22,35 @@ exports.agregarGraduado = async (req, res) => {
     }
 };
 
-
 exports.obtenerGraduados = async (req, res) => {
-
     try {
-
         const graduados = await Graduado.find();
-        res.json(graduados)
-
-
+        const graduadosConDatos = graduados.map(graduado => {
+            return {
+                _id: graduado._id,
+                carnet: graduado.carnet,
+                nombres: graduado.nombres,
+                apellidos: graduado.apellidos,
+                carrera: graduado.carrera,
+                facultad: graduado.facultad,
+                campus: graduado.campus,
+                frase_emotiva: graduado.frase_emotiva,
+                year_graduado: graduado.year_graduado,
+                estado_graduado: graduado.estado_graduado,
+                destacado_graduado: graduado.destacado_graduado,
+                qr_graduado: graduado.qr_graduado,
+                // URL de la imagen
+                foto_graduado: `public/uploads/${graduado.carnet}.jpg` ||
+                `public/uploads/${graduado.carnet}.jpeg` || 
+                `public/uploads/${graduado.carnet}.png`
+            };
+        });
+        res.json(graduadosConDatos);
     } catch (error) {
         console.log(error);
         res.status(500).send('Hubo un error');
     }
-}
+};
 
 exports.actualizarGraduado = async (req, res) => {
 
