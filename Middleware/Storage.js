@@ -4,17 +4,20 @@ const guardarImagen = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, './public/uploads');
     },
-    filename: (req,file,cb) => {
-        if(file !== null){
+    filename: (req, file, cb) => {
+        const carnet = req.body.carnet; // Obtener el número de carnet desde el cuerpo de la solicitud
+        if (carnet) {
             const ext = file.originalname.split('.').pop();
-            cb(null, Date.now() + '.'+ext);
+            const nombreArchivo = `${carnet}.${ext}`; // Usar el número de carnet como nombre del archivo
+            cb(null, nombreArchivo);
+        } else {
+            cb(new Error('Número de carnet no proporcionado en la solicitud'), null);
         }
     }
 });
 
 const filtroImagen = (req, file, cb) => {
-    if(file && (file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg' || 
-    file.mimetype === 'image/png' )) {
+    if(file && (file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/png' )) {
         cb(null, true);
     } else {
         cb(new Error('Archivo no permitido'), false);
@@ -23,4 +26,4 @@ const filtroImagen = (req, file, cb) => {
 
 const subirImagen = multer({ storage: guardarImagen, fileFilter: filtroImagen });
 
-module.exports = { subirImagen };
+module.exports = subirImagen;

@@ -1,113 +1,104 @@
-const GraduadoEstudent = require("../models/GraduadoEstudent");
+const multer = require('multer');
+const subirImagen = require("../Middleware/Storage");
+const Graduado = require("../models/GraduadoEstudent");
 
-
-exports.agregarGraduado = async (req,res) => {
+exports.agregarGraduado = async (req, res) => {
     try {
-        // Comprueba si todos los campos requeridos están presentes
-        const { carnet, nombres, apellidos, carrera, facultad, campus, year_graduado, estado_graduado, destacado_graduado, qr_graduado } = req.body;
-        if (!carnet || !nombres || !apellidos || !carrera || !facultad || !campus || !year_graduado || estado_graduado === undefined
-            || destacado_graduado === undefined || !qr_graduado) {
-            return res.status(400).json({msg: "Todos los campos requeridos deben estar presentes"});
+        let graduado;
+
+        // Si hay una imagen, añadir la ruta de la imagen al cuerpo de la solicitud
+        if (req.file) {
+            req.body.foto_graduado = req.file.path;
         }
 
-        // Crea el nuevo graduado
-        let graduado = new GraduadoEstudent({...req.body, foto_graduado: '/uploads/' + req.file.filename});
-        
+        graduado = new Graduado(req.body)
+
         await graduado.save();
         res.send(graduado);
     } catch (error) {
-        console.log(error);
-        res.status(500).send('Hubo un error');
+        console.error("Error al agregar graduado:", error);
+        res.status(500).json({ msg: 'Hubo un error al agregar graduado' });
     }
-}
+};
 
 
-exports.obtenerGraduado = async (req,res) => {
-
+exports.obtenerGraduados = async (req, res) => {
 
     try {
 
-        const graduados = await GraduadoEstudent.find();
+        const graduados = await Graduado.find();
         res.json(graduados)
 
-        
+
     } catch (error) {
         console.log(error);
         res.status(500).send('Hubo un error');
     }
 }
 
-exports.actualizarGraduado = async (req, res) =>{
+exports.actualizarGraduado = async (req, res) => {
 
     try {
 
-        const { carnet, nombres, apellidos, carrera, facultad, campus, frase_emotiva, year_graduado,
-            estado_graduado, destacado_graduado, foto_graduado, qr_graduado } = req.body;
-        let graduado = await GraduadoEstudent.findById(req.params.id);
+        let graduado = await Graduado.findById(req.params.id);
 
-        if (!graduado){
-            return res.status(400).jason({msg: "No existe el graduado"});
-        } 
+        if (!graduado) {
+            return res.status(400).json({ msg: "No existe el graduado" });
+        }
 
-        graduado.carnet = carnet;
-        graduado.nombres = nombres;
-        graduado.apellidos = apellidos;
-        graduado.carrera = carrera;
-        graduado.facultad = facultad;
-        graduado.campus = campus;
-        graduado.frase_emotiva = frase_emotiva;
-        graduado.year_graduado = year_graduado;
-        graduado.estado_graduado = estado_graduado;
-        graduado.destacado_graduado = destacado_graduado;
-        graduado.foto_graduado = foto_graduado;
-        graduado.qr_graduado = qr_graduado;
+        // Si hay una imagen, actualizar la ruta de la imagen en el cuerpo de la solicitud
+        if (req.file) {
+            req.body.foto_graduado = req.file.path;
+        }
 
-        graduado = await GraduadoEstudent.findOneAndUpdate({ _id: req.params.id}, graduado, {new: true})
-        res.json(graduado)
+        graduado.set(req.body);
 
-        
+        await graduado.save();
+
+        res.json(graduado);
+
     } catch (error) {
         console.log(error);
         res.status(500).send('Hubo un error');
     }
-} 
+}
 
-
-exports.obtenerGraduados = async (req, res) =>{
+exports.obtenerGraduado = async (req, res) => {
 
     try {
 
-        let graduado = await GraduadoEstudent.findById(req.params.id);
+        let graduado = await Graduado.findById(req.params.id);
 
-        if (!graduado){
-            return res.status(400).jason({msg: "No existe el graduado"});
-        } 
+        if (!graduado) {
+            return res.status(400).json({ msg: "No existe el graduado" });
+        }
 
         res.json(graduado)
 
-        
+
     } catch (error) {
         console.log(error);
         res.status(500).send('Hubo un error');
     }
-} 
+}
 
-exports.eliminarGraduado = async (req, res) =>{
+
+exports.eliminarGraduado = async (req, res) => {
 
     try {
 
-        let graduado = await GraduadoEstudent.findById(req.params.id);
+        let graduado = await Graduado.findById(req.params.id);
 
-        if (!graduado){
-            return res.status(400).jason({msg: "No existe el graduado"});
-        } 
+        if (!graduado) {
+            return res.status(400).json({ msg: "No existe el graduado" });
+        }
 
-        await GraduadoEstudent.findOneAndDelete({ _id: req.params.id })
-        res.json({msg: 'El graduado a sido eliminado con exito'})
+        await Graduado.findOneAndDelete({ _id: req.params.id })
+        res.json({ msg: 'El graduado a sido eliminado con exito' })
 
-        
+
     } catch (error) {
         console.log(error);
         res.status(500).send('Hubo un error');
     }
-} 
+}

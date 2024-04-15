@@ -27,7 +27,7 @@ const Estudiante_graduadoSchema = mongoose.Schema({
     },
     frase_emotiva:{
         type: String,
-        required: false
+        required: true
     },
     year_graduado:{
         type: String,

@@ -1,16 +1,17 @@
 const express = require('express');
 const conectarDB = require('./config/db');
-const cors = require( 'cors' );
+const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
 
-//Inicializacion
+// Inicialización
 const app = express();
 
 app.use(cors());
 
-app.use(express.json());//Habilitamos el uso del formato JSON en las solicitudes
-app.use(express.static('public')); //Establecemos la carpeta public para acceder a las imagenes
+app.use(express.json()); // Habilitamos el uso del formato JSON en las solicitudes
+app.use(express.urlencoded({ extended: true })); // Para procesar form data
+app.use(express.static('public')); // Establecemos la carpeta public para acceder a las imágenes
 
 //Conexion con mongoDB
 conectarDB()
