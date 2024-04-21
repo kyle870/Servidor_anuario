@@ -7,7 +7,9 @@ const path = require('path');
 // Inicialización
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:4200'
+}));
 
 app.use(express.json()); // Habilitamos el uso del formato JSON en las solicitudes
 app.use(express.urlencoded({ extended: true })); // Para procesar form data

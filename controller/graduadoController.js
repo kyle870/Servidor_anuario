@@ -1,7 +1,10 @@
+const fs = require( 'fs' );
 const multer = require('multer');
 const subirImagen = require("../Middleware/Storage");
 const Graduado = require("../models/GraduadoEstudent");
 const path =require( 'path' );
+const XLSX = require('xlsx');
+const mongoose = require( 'mongoose')
 
 exports.agregarGraduado = async (req, res) => {
     try {
@@ -22,6 +25,27 @@ exports.agregarGraduado = async (req, res) => {
     }
 };
 
+exports.guardarDatosExcel = async (req, res) => {
+    try {
+        if (!req.files || Object.keys(req.files).length === 0) {
+            return res.status(400).json({ message: 'No se ha enviado ningún archivo Excel' });
+        }
+
+        const excelFile = req.files.excelFile;
+        const workbook = XLSX.read(excelFile.data, { type: "buffer"});
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+        const jsonData = XLSX.utils.sheet_to_json(sheet);
+
+        await Graduado.insertMany(jsonData);
+
+        return res.status(200).json({ message: 'Datos guardados correctamente desde el archivo Excel' });
+    } catch (error) {
+        console.error('Error al guardar datos desde el archivo Excel:', error);
+        return res.status(500).json({ message: 'Error en el servidor' });
+    }
+};
+
 exports.obtenerGraduados = async (req, res) => {
     try {
         const graduados = await Graduado.find();
@@ -38,11 +62,18 @@ exports.obtenerGraduados = async (req, res) => {
                 year_graduado: graduado.year_graduado,
                 estado_graduado: graduado.estado_graduado,
                 destacado_graduado: graduado.destacado_graduado,
-                qr_graduado: graduado.qr_graduado,
                 // URL de la imagen
-                foto_graduado: `public/uploads/${graduado.carnet}.jpg` ||
-                `public/uploads/${graduado.carnet}.jpeg` || 
-                `public/uploads/${graduado.carnet}.png`
+                foto_graduado: (() => {
+                    const extensions = ['jpg', 'jpeg', 'png'];
+                    for (const ext of extensions) {
+                        const filePath = `public/uploads/${graduado.carnet}.${ext}`;
+                        if (fs.existsSync(filePath)) {
+                            return filePath;
+                        }
+                    }
+                    return null; // Si no se encuentra ninguna foto con las extensiones especificadas
+                })(),
+                qr_graduado: graduado.qr_graduado
             };
         });
         res.json(graduadosConDatos);
@@ -79,7 +110,31 @@ exports.actualizarGraduado = async (req, res) => {
     }
 }
 
-exports.obtenerGraduado = async (req, res) => {
+
+exports.obtenerUngraduado = async (req, res) => {
+    try {
+        // Extrae el id del parámetro de la solicitud y conviértelo en ObjectId
+        const id = new mongoose.Types.ObjectId(req.params.id);
+
+        // Busca el graduado en la base de datos por su id
+        const graduadoEncontrado = await Graduado.findById(id);
+
+        // Verifica si se encontró el graduado
+        if (!graduadoEncontrado) {
+            // Si no se encontró, devuelve un mensaje de error
+            return res.status(404).json({ error: "No se encontró ningún graduado con el id proporcionado." });
+        }
+
+        // Si se encontró el graduado, lo devuelve en la respuesta
+        res.json(graduadoEncontrado);
+    } catch (error) {
+        // Si ocurre un error durante la búsqueda, lo maneja
+        console.error("Error al intentar obtener el graduado:", error);
+        res.status(500).json({ error: "Hubo un error al intentar obtener el graduado." });
+    }
+};
+
+/*exports.obtenerGraduado = async (req, res) => {
 
     try {
 
@@ -96,25 +151,30 @@ exports.obtenerGraduado = async (req, res) => {
         console.log(error);
         res.status(500).send('Hubo un error');
     }
-}
+}*/
 
 
 exports.eliminarGraduado = async (req, res) => {
-
     try {
-
         let graduado = await Graduado.findById(req.params.id);
 
         if (!graduado) {
             return res.status(400).json({ msg: "No existe el graduado" });
         }
 
-        await Graduado.findOneAndDelete({ _id: req.params.id })
-        res.json({ msg: 'El graduado a sido eliminado con exito' })
+        // Eliminar la imagen asociada al graduado si existe
+        const extensions = ['jpg', 'jpeg', 'png'];
+        for (const ext of extensions) {
+            const filePath = `public/uploads/${graduado.carnet}.${ext}`;
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
+        }
 
-
+        await Graduado.findOneAndDelete({ _id: req.params.id });
+        res.json({ msg: 'El graduado ha sido eliminado con éxito' });
     } catch (error) {
         console.log(error);
         res.status(500).send('Hubo un error');
     }
-}
+};
