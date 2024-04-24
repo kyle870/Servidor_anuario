@@ -134,6 +134,25 @@ exports.obtenerUngraduado = async (req, res) => {
     }
 };
 
+exports.mostrarPorCarnet = async (req, res) => {
+    const carnet = req.params.carnet; // Se obtiene el carnet desde los parámetros de la solicitud
+
+    try {
+        // Buscar estudiante por carnet en la base de datos
+        const estudiante = await Graduado.findOne({ carnet });
+
+        if (!estudiante) {
+            return res.status(404).json({ mensaje: 'Graduado no encontrado' });
+        }
+
+        // Si se encuentra el estudiante, se envía como respuesta
+        res.json(estudiante);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ mensaje: 'Error del servidor' });
+    }
+};
+
 /*exports.obtenerGraduado = async (req, res) => {
 
     try {

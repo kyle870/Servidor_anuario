@@ -18,6 +18,9 @@ router.get('/:id', GraduadosController.obtenerUngraduado);
 //Eliminar graduado
 router.delete('/:id', GraduadosController.eliminarGraduado);
 
+// Ruta para mostrar un graduado por carnet
+router.get('/buscar/:carnet', GraduadosController.mostrarPorCarnet);
+
 //Guardar datos desde un archivo de excel
 router.post('/guardar-desde-excel', GraduadosController.guardarDatosExcel);
 
