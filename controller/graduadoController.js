@@ -135,7 +135,7 @@ exports.obtenerUngraduado = async (req, res) => {
 };
 
 exports.mostrarPorCarnet = async (req, res) => {
-    const carnet = req.params.carnet; // Se obtiene el carnet desde los parámetros de la solicitud
+    const carnet = req.params.carnet; // Obtener el carnet desde los parámetros de la solicitud
 
     try {
         // Buscar estudiante por carnet en la base de datos
@@ -144,7 +144,6 @@ exports.mostrarPorCarnet = async (req, res) => {
         if (!estudiante) {
             return res.status(404).json({ mensaje: 'Graduado no encontrado' });
         }
-
         // Si se encuentra el estudiante, se envía como respuesta
         res.json(estudiante);
     } catch (error) {
@@ -152,26 +151,6 @@ exports.mostrarPorCarnet = async (req, res) => {
         res.status(500).json({ mensaje: 'Error del servidor' });
     }
 };
-
-/*exports.obtenerGraduado = async (req, res) => {
-
-    try {
-
-        let graduado = await Graduado.findById(req.params.id);
-
-        if (!graduado) {
-            return res.status(400).json({ msg: "No existe el graduado" });
-        }
-
-        res.json(graduado)
-
-
-    } catch (error) {
-        console.log(error);
-        res.status(500).send('Hubo un error');
-    }
-}*/
-
 
 exports.eliminarGraduado = async (req, res) => {
     try {

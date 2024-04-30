@@ -13,7 +13,7 @@ app.use(cors({
 
 app.use(express.json()); // Habilitamos el uso del formato JSON en las solicitudes
 app.use(express.urlencoded({ extended: true })); // Para procesar form data
-app.use(express.static('public')); // Establecemos la carpeta public para acceder a las imágenes
+app.use('/' ,express.static('public/uploads')); // Establecemos la carpeta public para acceder a las imágenes
 
 //Conexion con mongoDB
 conectarDB()
