@@ -4,7 +4,8 @@
   "description": "ANUARIO API",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon ."
+    "start": "node index",
+    "dev": "nodemon index"
   },
   "author": "Isaac Morales",
   "license": "ISC",

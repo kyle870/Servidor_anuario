@@ -25,6 +25,22 @@ exports.agregarGraduado = async (req, res) => {
     }
 };
 
+exports.verImagengraduado = async (req, res) => {
+    const {carnet} = req.params;
+    try{
+        const estudiante = await Graduado.findOne({ carnet });
+
+        let ruta_imagen = path.join(__dirname,`../${estudiante.foto_graduado}`)
+        if (!fs.existsSync(ruta_imagen)){
+            return res.status(404).json({msg:"No se encontro la foto del graduado"}) 
+        }
+        res.sendFile(ruta_imagen);
+        
+    }catch(error){
+        console.log(error);
+    }
+}
+
 exports.guardarDatosExcel = async (req, res) => {
     try {
         if (!req.files || Object.keys(req.files).length === 0) {
@@ -43,6 +59,29 @@ exports.guardarDatosExcel = async (req, res) => {
     } catch (error) {
         console.error('Error al guardar datos desde el archivo Excel:', error);
         return res.status(500).json({ message: 'Error en el servidor' });
+    }
+};
+
+exports.filtrarGraduados = async (req, res) => {
+    try {
+        const { campus, facultad, carrera, year } = req.query;
+
+        // Construir el filtro para la consulta
+        const filter = {};
+
+        if (campus) filter.campus = campus;
+        if (facultad) filter.facultad = facultad;
+        if (carrera) filter.carrera = carrera;
+        if (year) filter.year_graduado = year;
+
+        // Ejecutar la consulta con el filtro
+        const graduadosFiltrados = await Graduado.find(filter);
+
+        // Retornar los graduados filtrados como respuesta
+        res.json(graduadosFiltrados);
+    } catch (error) {
+        console.error("Error al filtrar graduados:", error);
+        res.status(500).json({ msg: 'Error interno del servidor' });
     }
 };
 
