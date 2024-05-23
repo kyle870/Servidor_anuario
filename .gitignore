@@ -1,3 +1,6 @@
 /node_modules/
 /public/uploads/
 /.env
+/public/uploads_Excel/
+/public/uploads_coleccionfotos
+/Middleware/counters.json

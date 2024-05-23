@@ -48,17 +48,22 @@ exports.guardarDatosExcel = async (req, res) => {
         }
 
         const excelFile = req.files.excelFile;
+        console.log('Datos del archivo Excel recibidos:', excelFile); //* Verifica los datos del archivo Excel recibidos en el servidor
+
         const workbook = XLSX.read(excelFile.data, { type: "buffer"});
         const sheetName = workbook.SheetNames[0];
         const sheet = workbook.Sheets[sheetName];
         const jsonData = XLSX.utils.sheet_to_json(sheet);
 
+        console.log('Datos JSON del archivo Excel:', jsonData); //* Verifica los datos JSON generados a partir del archivo Excel
+
         await Graduado.insertMany(jsonData);
+        console.log('Datos insertados en la base de datos correctamente.'); //* Verifica si los datos se insertaron correctamente
 
         return res.status(200).json({ message: 'Datos guardados correctamente desde el archivo Excel' });
     } catch (error) {
         console.error('Error al guardar datos desde el archivo Excel:', error);
-        return res.status(500).json({ message: 'Error en el servidor' });
+        return res.status(500).json({ message: 'Error en el servidor', error });
     }
 };
 
