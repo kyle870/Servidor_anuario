@@ -7,6 +7,6 @@ const router = express.Router();
 router.post('/coleccion', subirColeccionFotos.array('fotos_graduacion', 200), ColeccionFotosController.agregarColeccionFotos);
 
 
-router.get('/buscar/imagen/:campus/:year', ColeccionFotosController.verImagenesgraduaciones)
+router.get('/buscar/imagen/:campus/:year/:sesion', ColeccionFotosController.verImagenesgraduaciones)
 
 module.exports = router;

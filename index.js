@@ -4,8 +4,10 @@ const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
 
-// Inicialización
+//* Inicialización
 const app = express();
+
+app.use(express.json({limit:'100mb'}))
 
 app.use(cors({
     origin: 'http://localhost:4200'
