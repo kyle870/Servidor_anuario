@@ -33,6 +33,14 @@ const Estudiante_graduadoSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    telefono_graduado:{
+        type: String,
+        required: true
+    },
+    correo_graduado:{
+        type: String,
+        required: true
+    },
     estado_graduado:{
         type: Boolean,
         required: true
