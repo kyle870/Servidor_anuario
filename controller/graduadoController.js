@@ -9,6 +9,7 @@ const mongoose = require( 'mongoose')
 exports.agregarGraduado = async (req, res) => {
     try {
         let graduado;
+        
 
         // Si hay una imagen, añadir la ruta de la imagen al cuerpo de la solicitud
         if (req.file) {
@@ -40,32 +41,6 @@ exports.verImagengraduado = async (req, res) => {
         console.log(error);
     }
 }
-
-exports.guardarDatosExcel = async (req, res) => {
-    try {
-        if (!req.files || Object.keys(req.files).length === 0) {
-            return res.status(400).json({ message: 'No se ha enviado ningún archivo Excel' });
-        }
-
-        const excelFile = req.files.excelFile;
-        console.log('Datos del archivo Excel recibidos:', excelFile); //* Verifica los datos del archivo Excel recibidos en el servidor
-
-        const workbook = XLSX.read(excelFile.data, { type: "buffer"});
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
-        const jsonData = XLSX.utils.sheet_to_json(sheet);
-
-        console.log('Datos JSON del archivo Excel:', jsonData); //* Verifica los datos JSON generados a partir del archivo Excel
-
-        await Graduado.insertMany(jsonData);
-        console.log('Datos insertados en la base de datos correctamente.'); //* Verifica si los datos se insertaron correctamente
-
-        return res.status(200).json({ message: 'Datos guardados correctamente desde el archivo Excel' });
-    } catch (error) {
-        console.error('Error al guardar datos desde el archivo Excel:', error);
-        return res.status(500).json({ message: 'Error en el servidor', error });
-    }
-};
 
 exports.filtrarGraduados = async (req, res) => {
     try {
@@ -104,6 +79,8 @@ exports.obtenerGraduados = async (req, res) => {
                 campus: graduado.campus,
                 frase_emotiva: graduado.frase_emotiva,
                 year_graduado: graduado.year_graduado,
+                telefono_graduado: graduado.telefono_graduado,
+                correo_graduado: graduado.correo_graduado,
                 estado_graduado: graduado.estado_graduado,
                 destacado_graduado: graduado.destacado_graduado,
                 // URL de la imagen
