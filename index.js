@@ -16,7 +16,12 @@ app.use(bodyParser.json());
 app.use(express.json()); //* Habilitamos el uso del formato JSON en las solicitudes
 app.use(express.urlencoded({ extended: true })); //* Para procesar form data
 
-app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
+
+//*redirigir cualquier URL al index nuevamente
+app.get('*',(req, res) =>{
+    res.sendFile(path.join(__dirname,'/public/index.html'))
+})
 
 app.use('/' ,express.static('public/uploads')); //* Establecemos la carpeta public para acceder a las imágenes
 app.use('/',express.static('public/uploads_coleccionfotos'))
