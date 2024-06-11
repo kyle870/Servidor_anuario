@@ -1,5 +1,7 @@
 /node_modules/
 /public/uploads/
+/public/assets/Fotos/
+/public/
 /.env
 /public/uploads_Excel/
 /public/uploads_coleccionfotos

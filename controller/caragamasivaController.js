@@ -1,6 +1,6 @@
 const path = require('path')
 const fs = require('fs')
-
+const Graduados = require('../models/GraduadoEstudent');
 
 exports.CargaMasivaCSV = async (req, res) =>{
 
@@ -83,10 +83,63 @@ exports.CargaMasivaCSV = async (req, res) =>{
         //*Inicio de formateo en los datos
         try {
 
-            res.json(json_object)
+            //!verificar repetidos por carnet en el archivo
+            const array_numeros_carnet = json_object.map(item_carnet => item_carnet.carnet).flat(1);
+            const repetidos_carnet_documento = [...new Set(array_numeros_carnet.filter((item, index) => array_numeros_carnet.indexOf(item) !== index))];
+
+            //!verificar repetido por carnet en base de datos
+            const empleados_repetidos_database = await Graduados.find({carnet: { $in: array_numeros_carnet}}).select('carnet nombres apellidos')
+
+            if(empleados_repetidos_database.length !== 0 || repetidos_carnet_documento.length !== 0 ){
+                res.status(400).json({
+                    msg:'Elementos Repetidos en Base de Datos o CSV cargado',
+                    repetidos_carnet_documento: repetidos_carnet_documento, 
+                    repetidos_carnet_database: empleados_repetidos_database
+                })
+            }else{
+
+                let copia_objeto_datos = json_object.map(item =>{
+    
+                    let flag_destacado;
+    
+                    if(item.destacado_graduado === "si"){
+                        flag_destacado = true
+                    }else{
+                        flag_destacado = false
+                    }
+    
+                    return {
+                        carnet: parseInt(item.carnet),
+                        nombres: item.nombres,
+                        apellidos: item.apellidos,
+                        carrera: item.carrera,
+                        facultad: item.facultad,
+                        campus: item.campus,
+                        frase_emotiva: item.frase_emotiva,
+                        year_graduado: parseInt(item.year_graduado),
+                        telefono_graduado: item.telefono_graduado,
+                        correo_graduado: item.correo_graduado,
+                        estado_graduado: true,
+                        destacado_graduado: flag_destacado,
+                        qr_graduado: item.qr_graduado
+    
+                    }
+                })
+    
+                const datos_guardados = await Graduados.insertMany(copia_objeto_datos)
+    
+                res.json({msg: 'Archivo cargado con éxito, se cargaron los graduados'})
+            }
+
+            fs.writeFile(path.join(__dirname, `../public/uploads_Excel/${file_name}/${file_name}.json`), JSON.stringify(json_object), (err) => {
+                if (err) {
+                    console.error(err)
+                }
+            })
             
         } catch (error) {
-            res.sendStatus(500).json({msg: error.message});
+            console.log(error)
+           // res.send(500).json({msg: error.message});
         }
     }
 }

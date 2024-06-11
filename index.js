@@ -4,9 +4,12 @@ const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
 const bodyParser = require('body-parser');
+const dotenv = require('dotenv')
 
 //* Inicialización
+dotenv.config();
 const app = express();
+const port = process.env.PORT || '4300';
 
 app.use(express.json({limit:'100mb'}))
 
@@ -19,24 +22,22 @@ app.use(express.urlencoded({ extended: true })); //* Para procesar form data
 app.use(express.static(path.join(__dirname, 'public')));
 
 //*redirigir cualquier URL al index nuevamente
-app.get('*',(req, res) =>{
-    res.sendFile(path.join(__dirname,'/public/index.html'))
+app.get('/:universalurl',(req, res) =>{
+    res.redirect(`http://localhost:${port}`)
 })
 
-app.use('/' ,express.static('public/uploads')); //* Establecemos la carpeta public para acceder a las imágenes
-app.use('/',express.static('public/uploads_coleccionfotos'))
+app.use(express.static('public/uploads')); //* Establecemos la carpeta public para acceder a las imágenes
+app.use(express.static('public/uploads_coleccionfotos'))
 
 //* Conexion con mongoDB
 conectarDB()
 
-app.use('/api/agregar_graduados', require('./routes/agregar_graduados'));
-app.use('/api/agregar_coleccionfotos', require('./routes/agregar_coleccionfotos'));
+app.use('/api/graduados', require('./routes/agregar_graduados'));
+app.use('/api/coleccion-fotos', require('./routes/agregar_coleccionfotos'));
 app.use('/api/filtro_gallery', require('./routes/filtroFotos'));
 app.use('/api/carga_masiva', require('./routes/cargamasiva'));
 
-
-
 //* Definimos ruta principal
-app.listen(4000, () =>{
-    console.log('El servidor esta corriendo perfectamente');
+app.listen(port, () =>{
+    console.log(`El servidor esta corriendo perfectamente | http://localhost:${port}`);
 })
