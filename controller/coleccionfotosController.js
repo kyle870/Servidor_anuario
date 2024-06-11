@@ -18,7 +18,7 @@ exports.agregarColeccionFotos = async (req, res) => {
         }
 
         // Añadir las rutas de las fotos al cuerpo de la solicitud
-        req.body.fotos_graduacion = rutasFotos;
+        req.body.fotos_graduaciones = rutasFotos;
 
         // Verificar que year_graduacion y sesion estén presentes
         const { year_graduacion, sesion } = req.body;
@@ -51,7 +51,7 @@ exports.verImagenesgraduaciones = async (req, res) => {
 
         //*Codigo para recorrer el array de imagenes
         let array_imagenes = fotosGraduaciones.map(item=>{
-            return item.fotos_graduacion
+            return item.fotos_graduaciones
         });
 
         let coleccion_flat = array_imagenes.flat(1)

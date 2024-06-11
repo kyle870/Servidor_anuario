@@ -19,7 +19,7 @@ router.get('/api/filtro_gallery/images', async (req, res) => {
       const imagePaths = galleries.flatMap(gallery =>
         gallery.fotos_graduacion.map(image => ({
           filename: image,
-          url: `http://localhost:4000/${image}`
+          url: `http://localhost:4100/${image}`
         }))
       );
   
