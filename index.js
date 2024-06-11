@@ -28,10 +28,11 @@ app.use('/api/agregar_graduados', require('./routes/agregar_graduados'));
 app.use('/api/agregar_coleccionfotos', require('./routes/agregar_coleccionfotos'));
 app.use('/api/filtro_gallery', require('./routes/filtroFotos'));
 app.use('/api/carga_masiva', require('./routes/cargamasiva'));
+app.use('/api/filtro', require('./routes/filtroCarrerasFacultad'))
 
 
 
 //* Definimos ruta principal
-app.listen(4000, () =>{
+app.listen(4100, () =>{
     console.log('El servidor esta corriendo perfectamente');
 })

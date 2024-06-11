@@ -4,7 +4,7 @@ const subirColeccionFotos = require("../Middleware/Storage_Coleccionfotos");
 const router = express.Router();
 
 
-router.post('/coleccion', subirColeccionFotos.array('fotos_graduacion', 200), ColeccionFotosController.agregarColeccionFotos);
+router.post('/coleccion', subirColeccionFotos.array('fotos_graduacion', 20), ColeccionFotosController.agregarColeccionFotos);
 
 
 router.get('/buscar/imagen/:campus/:year/:sesion', ColeccionFotosController.verImagenesgraduaciones)

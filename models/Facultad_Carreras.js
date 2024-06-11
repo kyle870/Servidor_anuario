@@ -1,18 +1,10 @@
-const facultadSchema = new mongoose.Schema({
-    nombre_facultad: String,
+const mongoose = require('mongoose');
+
+const DataFiltroSchema = new mongoose.Schema({
+  year: Number,
+  campus: String,
+  faculty: String,
+  career: String
 });
 
-const carreraSchema = new mongoose.Schema({
-    nombre_carrera: String,
-    facultad: { type: mongoose.Schema.Types.ObjectId, ref: 'Facultad' },
-    año: Number,
-});
-
-const campusSchema = new mongoose.Schema({
-    nombre_campus: String,
-    facultades: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Facultad' }],
-});
-
-const Facultad = mongoose.model('Facultad', facultadSchema);
-const Carrera = mongoose.model('Carrera', carreraSchema);
-const Campus = mongoose.model('Campus', campusSchema);
+module.exports = mongoose.model('Data', DataFiltroSchema);

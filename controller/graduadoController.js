@@ -104,38 +104,36 @@ exports.obtenerGraduados = async (req, res) => {
     }
 };
 
-exports.actualizarGraduado = async (req, res) => {
-
+exports.updateGraduado = async (req, res) => {
     try {
-
-        let graduado = await Graduado.findById(req.params.id);
-
-        if (!graduado) {
-            return res.status(400).json({ msg: "No existe el graduado" });
-        }
-
-        // Si hay una imagen, actualizar la ruta de la imagen en el cuerpo de la solicitud
+        const { carnet } = req.body;
+        const updateData = req.body;
         if (req.file) {
-            req.body.foto_graduado = req.file.path;
+            updateData.foto_graduado = req.file.path;
         }
 
-        graduado.set(req.body);
+        const graduado = await Graduados.findOneAndUpdate({ carnet: carnet }, updateData, { new: true });
+        if (!graduado) {
+            return res.status(404).send('Graduado no encontrado.');
+        }
 
-        await graduado.save();
-
-        res.json(graduado);
-
+        res.status(200).send('Datos actualizados con éxito.');
     } catch (error) {
-        console.log(error);
-        res.status(500).send('Hubo un error');
+        console.error('Error al actualizar los datos:', error);
+        res.status(500).send('Error al actualizar los datos.');
     }
-}
+};
 
 
 exports.obtenerUngraduado = async (req, res) => {
     try {
-        // Extrae el id del parámetro de la solicitud y conviértelo en ObjectId
-        const id = new mongoose.Types.ObjectId(req.params.id);
+        // Verifica si req.params.id es una cadena hexadecimal de 24 caracteres
+        if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+            return res.status(400).json({ error: "El ID proporcionado no es válido." });
+        }
+
+        // Convierte req.params.id en ObjectId
+        const id = mongoose.Types.ObjectId(req.params.id);
 
         // Busca el graduado en la base de datos por su id
         const graduadoEncontrado = await Graduado.findById(id);
@@ -154,6 +152,7 @@ exports.obtenerUngraduado = async (req, res) => {
         res.status(500).json({ error: "Hubo un error al intentar obtener el graduado." });
     }
 };
+
 
 exports.mostrarPorCarnet = async (req, res) => {
     const carnet = req.params.carnet; // Obtener el carnet desde los parámetros de la solicitud
