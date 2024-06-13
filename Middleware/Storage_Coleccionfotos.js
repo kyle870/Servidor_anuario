@@ -29,7 +29,7 @@ const guardarColeccionFotos = multer.diskStorage({
         cb(null, './public/uploads_coleccionfotos');
     },
     filename: (req, file, cb) => {
-        const { campus, year_graduacion } = req.body; // Obtener campus y year_graduacion desde el cuerpo de la solicitud
+        const { campus, year_graduacion } = req.body; //* Obtener campus y year_graduacion desde el cuerpo de la solicitud
         if (campus && year_graduacion) {
             const counter = readCounter(campus, year_graduacion);
             updateCounter(campus, year_graduacion, counter);

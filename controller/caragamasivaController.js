@@ -76,8 +76,8 @@ exports.CargaMasivaCSV = async (req, res) =>{
                     objeto_fila[headers[j].trim()] = data[j].trim();
                 }
             }
-
             json_object.push(objeto_fila)
+            console.log(json_object)
         }
 
         //*Inicio de formateo en los datos
@@ -138,8 +138,7 @@ exports.CargaMasivaCSV = async (req, res) =>{
             })
             
         } catch (error) {
-            console.log(error)
-           // res.send(500).json({msg: error.message});
+            res.sendStatus(500).json({msg: error.message});
         }
     }
 }

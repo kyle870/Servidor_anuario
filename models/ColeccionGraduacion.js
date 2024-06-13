@@ -9,7 +9,7 @@ const Coleccion_graduacionSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    fotos_graduacion: {
+    fotos_graduaciones: {
         type: [String],
         required: false
     },
