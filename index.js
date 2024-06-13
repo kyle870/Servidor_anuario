@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 app.use(express.json()); //* Habilitamos el uso del formato JSON en las solicitudes
 app.use(express.urlencoded({ extended: true })); //* Para procesar form data
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
 
 //*redirigir cualquier URL al index nuevamente
 app.get('/:universalurl',(req, res) =>{
