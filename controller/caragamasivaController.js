@@ -76,11 +76,8 @@ exports.CargaMasivaCSV = async (req, res) =>{
                     objeto_fila[headers[j].trim()] = data[j].trim();
                 }
             }
-            console.log({msg:'Esto lo recibe el objeto fila:', objeto_fila});
-
-
             json_object.push(objeto_fila)
-            console.log({msg:'Esto lo recibe el objeto JSON:', json_object});
+            console.log(json_object)
         }
 
         //*Inicio de formateo en los datos

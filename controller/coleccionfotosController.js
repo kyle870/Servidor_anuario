@@ -1,9 +1,7 @@
 const fs = require('fs');
 const multer = require('multer');
-const subirColeccionFotos = require("../Middleware/Storage_Coleccionfotos");
 const ColeccionGraduacion = require("../models/ColeccionGraduacion");
 const path = require('path');
-const mongoose = require('mongoose');
 
 exports.agregarColeccionFotos = async (req, res) => {
     try {
@@ -47,13 +45,14 @@ exports.verImagenesgraduaciones = async (req, res) => {
     try{
         const fotosGraduaciones = await ColeccionGraduacion.find({campus, year_graduacion: year, sesion });
 
-        let ruta_imagen = path.join(__dirname,`../${fotosGraduaciones.fotos_graduacion}`)
+        let ruta_imagen = path.join(__dirname,`../${fotosGraduaciones.fotos_graduaciones}`)
 
         //*Codigo para recorrer el array de imagenes
         let array_imagenes = fotosGraduaciones.map(item=>{
             return item.fotos_graduaciones
         });
-
+        console.log('Muestra el contenido del Array',fotosGraduaciones);
+        
         let coleccion_flat = array_imagenes.flat(1)
 
         let coleccion_ruta_completa = []
@@ -72,12 +71,9 @@ exports.verImagenesgraduaciones = async (req, res) => {
             let mimeType = path.extname(ruta_imagen).substring(1);
 
             coleccion_base64.push(`data:image/${mimeType};base64,${imagenBase64}`)
-
         })
-
         res.json({coleccion_base64})
-        
     }catch(error){
-        console.log(error);
+        console.log('No se encontrarón las imagenes', error);
     }
 };

@@ -9,9 +9,8 @@ const mongoose = require( 'mongoose')
 exports.agregarGraduado = async (req, res) => {
     try {
         let graduado;
-        
 
-        // Si hay una imagen, añadir la ruta de la imagen al cuerpo de la solicitud
+        //* Si hay una imagen, añadir la ruta de la imagen al cuerpo de la solicitud
         if (req.file) {
             req.body.foto_graduado = req.file.path;
         }
@@ -155,16 +154,16 @@ exports.obtenerUngraduado = async (req, res) => {
 
 
 exports.mostrarPorCarnet = async (req, res) => {
-    const carnet = req.params.carnet; // Obtener el carnet desde los parámetros de la solicitud
+    const carnet = req.params.carnet; //* Obtener el carnet desde los parámetros de la solicitud
 
     try {
-        // Buscar estudiante por carnet en la base de datos
+        //* Buscar estudiante por carnet en la base de datos
         const estudiante = await Graduado.findOne({ carnet });
 
         if (!estudiante) {
             return res.status(404).json({ mensaje: 'Graduado no encontrado' });
         }
-        // Si se encuentra el estudiante, se envía como respuesta
+        //* Si se encuentra el estudiante, se envía como respuesta
         res.json(estudiante);
     } catch (error) {
         console.error(error);

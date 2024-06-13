@@ -31,7 +31,6 @@ app.use('/api/carga_masiva', require('./routes/cargamasiva'));
 app.use('/api/filtro', require('./routes/filtroCarrerasFacultad'))
 
 
-
 //* Definimos ruta principal
 app.listen(4100, () =>{
     console.log('El servidor esta corriendo perfectamente');
